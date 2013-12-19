@@ -20,7 +20,7 @@ public class CharacterMovement : MonoBehaviour {
 	enum square {Grass = 1, Water = 2, Floor = 3, Walls = 4, Path = 5, Player = 6, WallBase = 7};
 
 	// the dimension of the map (must be square)
-	static int mapSize = 10;
+	static int mapSize = 14;
 	// block is used to find blocks that the play is not allowed to move onto
 	GameObject[] block;
 	GameObject[] saveWalls;
