@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\CharacterMovement.cs">
+    <Files>
+      <File FileName="Assets\CharacterMovement.cs" Line="10" Column="24" />
+      <File FileName="Assets\npcBasic.cs" Line="15" Column="1" />
+      <File FileName="..\Unity Projects\MaxPong\Assets\BallMovement.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
