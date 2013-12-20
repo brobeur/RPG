@@ -52,6 +52,12 @@ public class CharacterMovement : MonoBehaviour {
 	// players position on the map
 	int playerPosx;
 	int playerPosy;
+	// determines whether player is already moving
+	bool isMoving = false;
+	// temp value for distance player moves
+	Vector2 moveDistance;
+	// speed of player
+	public int speed = 7;
 
 	// Use this for initialization
 	void Start () {
@@ -91,9 +97,10 @@ public class CharacterMovement : MonoBehaviour {
 		// and we cant move into blocks that don't allow it
 		// allowable blocks are currently grass, path and floor
 		if (Input.GetKey (moveUp) & playerPosy < mapSize - 1) {
-			if (mapGrid[playerPosx,playerPosy+1].traversable){
+			if (mapGrid[playerPosx,playerPosy+1].traversable && isMoving == false){
+				isMoving = true;
 				playerPosy = playerPosy + 1;
-				transform.position = new Vector2(playerPosx, playerPosy);
+				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
 				if (mapGrid [playerPosx, playerPosy-1] != Floor &
@@ -105,9 +112,10 @@ public class CharacterMovement : MonoBehaviour {
 				}
 			}
 		} else if (Input.GetKey (moveDown) & playerPosy > 0) {
-			if (mapGrid[playerPosx,playerPosy-1].traversable) {
+			if (mapGrid[playerPosx,playerPosy-1].traversable && isMoving == false){
+				isMoving = true;
 				playerPosy = playerPosy - 1;
-				transform.position = new Vector2(playerPosx, playerPosy);
+				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
 				if (mapGrid [playerPosx, playerPosy+1] != Floor &
@@ -119,9 +127,10 @@ public class CharacterMovement : MonoBehaviour {
 				}
 			}
 		} else if (Input.GetKey (moveLeft) & playerPosx > 0) {
-			if (mapGrid[playerPosx-1,playerPosy].traversable) {
+			if (mapGrid[playerPosx-1,playerPosy].traversable && isMoving == false){
+				isMoving = true;
 				playerPosx = playerPosx - 1;
-				transform.position = new Vector2(playerPosx, playerPosy);
+				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
 				if (mapGrid [playerPosx+1, playerPosy] != Floor &
@@ -133,9 +142,10 @@ public class CharacterMovement : MonoBehaviour {
 				}
 			}
 		} else if (Input.GetKey (moveRight) & playerPosx < mapSize - 1) {
-			if (mapGrid[playerPosx+1,playerPosy].traversable) {
+			if (mapGrid[playerPosx+1,playerPosy].traversable && isMoving == false){
+				isMoving = true;
 				playerPosx = playerPosx + 1;
-				transform.position = new Vector2(playerPosx, playerPosy);
+				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
 				if (mapGrid [playerPosx-1, playerPosy] != Floor &
@@ -166,5 +176,63 @@ public class CharacterMovement : MonoBehaviour {
 		// Remap the walls so we are restricted again
 		PlaceMapObjects (Walls);
 	}
-	
+
+	IEnumerator MoveToSpace(int x,int y)
+	{
+		while (transform.position.x != x || transform.position.y != y)
+		{
+			// moving right
+			if (transform.position.x < x)
+			{
+				moveDistance.x = speed * Time.deltaTime;
+				// change move distance to only reach x in the case that it would go past it
+				if (moveDistance.x + transform.position.x > x)
+				{
+					moveDistance.x = x - transform.position.x;
+				}
+			}
+			// moving left
+			else if (transform.position.x > x)
+			{
+				moveDistance.x = -speed * Time.deltaTime;
+				// change move distance to only reach x in the case that it would go past it
+				if (moveDistance.x + transform.position.x < x)
+				{
+					moveDistance.x = -(transform.position.x - x);
+				}
+			}
+			else // x is already in position
+			{
+				moveDistance.x = 0;
+			}
+			// moving up
+			if (transform.position.y < y)
+			{
+				moveDistance.y = speed * Time.deltaTime;
+				// change move distance to only reach y in the case that it would go past it
+				if (moveDistance.y + transform.position.y > y)
+				{
+					moveDistance.y = y - transform.position.y;
+				}
+			}
+			// moving down
+			else if (transform.position.y > y)
+			{
+				moveDistance.y = -speed * Time.deltaTime;
+				// change move distance to only reach y in the case that it would go past it
+				if (moveDistance.y + transform.position.y < y)
+				{
+					moveDistance.y = -(transform.position.y - y);
+				}
+			}
+			else // y is already in position
+			{
+				moveDistance.y = 0;
+			}
+			transform.Translate(moveDistance);
+			yield return 0;
+		}
+		// set so that player can move with new input again
+		isMoving = false;
+	}
 }
