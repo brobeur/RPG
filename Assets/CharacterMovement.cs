@@ -1,12 +1,6 @@
-﻿// I think i need to figure out how to slow movement down. so when you press w,a,s, or d you
-// just move once forward and stop. It happens to quick right now
-
-// then maybe have the npc have a chat bubble or something interesting happen when you click on him
+﻿// then maybe have the npc have a chat bubble or something interesting happen when you click on him
 
 // have your inventory/character screen come up when you click on yourself
-
-// expand the map and see if i get errors.
-
 
 using UnityEngine;
 using System.Collections;
@@ -40,6 +34,8 @@ public class CharacterMovement : MonoBehaviour {
 	tile Path = new tile ("Path", true);
 	tile Player = new tile ("Player", false);
 	tile WallBase = new tile ("WallBase", false);
+	tile NPCs = new tile ("NPCs", false);
+	tile Enemies = new tile ("Enemies", false);
 
 	// block is used to find blocks that the play is not allowed to move onto
 	GameObject[] block;
@@ -72,7 +68,8 @@ public class CharacterMovement : MonoBehaviour {
 		PlaceMapObjects (Walls);
 		PlaceMapObjects (WallBase);
 		PlaceMapObjects (Path);
-		PlaceMapObjects (Player);
+		PlaceMapObjects (NPCs);
+		PlaceMapObjects (Enemies);
 	}
 
 	// Makes the map, just adds the blocks that shouldnt be passable to an array

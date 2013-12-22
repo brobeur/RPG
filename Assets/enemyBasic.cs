@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class npcBasic : MonoBehaviour {
+public class enemyBasic : MonoBehaviour {
+	int hitPoints;
+	int AttackDamage;
 
-	Rect MessageBox;
 	// Use this for initialization
 	void Start () {
-	
+		hitPoints = 100;
+		AttackDamage = 5;
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
-	}
 
-	// When this object is clicked
-	void OnMouseDown (){
-				print ("clicked on NPC");
-		}
 	}
+}
