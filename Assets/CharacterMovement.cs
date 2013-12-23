@@ -13,7 +13,6 @@ public class CharacterMovement : MonoBehaviour {
 	KeyCode moveRight = KeyCode.D;
 
 	// block is used to find blocks that the play is not allowed to move onto
-	GameObject[] block;
 	GameObject[] saveWalls;
 
 	// players position on the map
@@ -25,7 +24,9 @@ public class CharacterMovement : MonoBehaviour {
 	Vector2 moveDistance;
 	// speed of player
 	public int speed = 7;
+
 	public MapBuilding map;
+	MapBuilding.characters saveChar;
 
 	// Use this for initialization
 	void Start () {
@@ -45,62 +46,74 @@ public class CharacterMovement : MonoBehaviour {
 		// and we cant move into blocks that don't allow it
 		// allowable blocks are currently grass, path and floor
 		if (Input.GetKey (moveUp)) {
-			if (map.mapGrid[playerPosx,playerPosy+1].traversable && isMoving == false){
+			if (map.mapGrid[playerPosx,playerPosy+1].CanIMoveHere() && isMoving == false){
 				isMoving = true;
+				saveChar = map.mapGrid[playerPosx,playerPosy].character;
+				map.mapGrid[playerPosx,playerPosy].character = null;
 				playerPosy = playerPosy + 1;
+				map.mapGrid[playerPosx,playerPosy].character = saveChar;
 				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
-				if (map.mapGrid [playerPosx, playerPosy-1] != map.Floor &
-				    map.mapGrid [playerPosx, playerPosy] == map.Floor) {
+				if (map.mapGrid [playerPosx, playerPosy-1].tileType != "Floor" &
+				    map.mapGrid [playerPosx, playerPosy].tileType == "Floor") {
 					BringWallsDown();
-				} else if (map.mapGrid [playerPosx, playerPosy-1] == map.Floor &
-				           map.mapGrid [playerPosx, playerPosy] != map.Floor) {
+				} else if (map.mapGrid [playerPosx, playerPosy-1].tileType == "Floor" &
+				           map.mapGrid [playerPosx, playerPosy].tileType != "Floor") {
 					BringWallsUp();
 				}
 			}
 		} else if (Input.GetKey (moveDown)) {
-			if (map.mapGrid[playerPosx,playerPosy-1].traversable && isMoving == false){
+			if (map.mapGrid[playerPosx,playerPosy-1].CanIMoveHere() && isMoving == false){
 				isMoving = true;
+				saveChar = map.mapGrid[playerPosx,playerPosy].character;
+				map.mapGrid[playerPosx,playerPosy].character = null;
 				playerPosy = playerPosy - 1;
+				map.mapGrid[playerPosx,playerPosy].character = saveChar;
 				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
-				if (map.mapGrid [playerPosx, playerPosy+1] != map.Floor &
-				    map.mapGrid [playerPosx, playerPosy] == map.Floor) {
+				if (map.mapGrid [playerPosx, playerPosy+1].tileType != "Floor" &
+				    map.mapGrid [playerPosx, playerPosy].tileType == "Floor") {
 					BringWallsDown();
-				} else if (map.mapGrid [playerPosx, playerPosy+1] == map.Floor &
-				           map.mapGrid [playerPosx, playerPosy] != map.Floor) {
+				} else if (map.mapGrid [playerPosx, playerPosy+1].tileType == "Floor" &
+				           map.mapGrid [playerPosx, playerPosy].tileType != "Floor") {
 					BringWallsUp();
 				}
 			}
 		} else if (Input.GetKey (moveLeft)) {
-			if (map.mapGrid[playerPosx-1,playerPosy].traversable && isMoving == false){
+			if (map.mapGrid[playerPosx-1,playerPosy].CanIMoveHere() && isMoving == false){
 				isMoving = true;
+				saveChar = map.mapGrid[playerPosx,playerPosy].character;
+				map.mapGrid[playerPosx,playerPosy].character = null;
 				playerPosx = playerPosx - 1;
+				map.mapGrid[playerPosx,playerPosy].character = saveChar;
 				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
-				if (map.mapGrid [playerPosx+1, playerPosy] != map.Floor &
-				    map.mapGrid [playerPosx, playerPosy] == map.Floor) {
+				if (map.mapGrid [playerPosx+1, playerPosy].tileType != "Floor" &
+				    map.mapGrid [playerPosx, playerPosy].tileType == "Floor") {
 					BringWallsDown();
-				} else if (map.mapGrid [playerPosx+1, playerPosy] == map.Floor &
-				           map.mapGrid [playerPosx, playerPosy] != map.Floor) {
+				} else if (map.mapGrid [playerPosx+1, playerPosy].tileType == "Floor" &
+				           map.mapGrid [playerPosx, playerPosy].tileType != "Floor") {
 					BringWallsUp();
 				}
 			}
 		} else if (Input.GetKey (moveRight)) {
-			if (map.mapGrid[playerPosx+1,playerPosy].traversable && isMoving == false){
+			if (map.mapGrid[playerPosx+1,playerPosy].CanIMoveHere() && isMoving == false){
 				isMoving = true;
+				saveChar = map.mapGrid[playerPosx,playerPosy].character;
+				map.mapGrid[playerPosx,playerPosy].character = null;
 				playerPosx = playerPosx + 1;
+				map.mapGrid[playerPosx,playerPosy].character = saveChar;
 				StartCoroutine (MoveToSpace(playerPosx, playerPosy));
 				// If your characters current position is on a floor (as in inside)
 				// and where we came from was not floor, then we need to hide the walls
-				if (map.mapGrid [playerPosx-1, playerPosy] != map.Floor &
-				    map.mapGrid [playerPosx, playerPosy] == map.Floor) {
+				if (map.mapGrid [playerPosx-1, playerPosy].tileType != "Floor" &
+				    map.mapGrid [playerPosx, playerPosy].tileType == "Floor") {
 					BringWallsDown();
-				} else if (map.mapGrid [playerPosx-1, playerPosy] == map.Floor &
-				           map.mapGrid [playerPosx, playerPosy] != map.Floor) {
+				} else if (map.mapGrid [playerPosx-1, playerPosy].tileType == "Floor" &
+				           map.mapGrid [playerPosx, playerPosy].tileType != "Floor") {
 					BringWallsUp();
 				}
 			}
@@ -114,7 +127,7 @@ public class CharacterMovement : MonoBehaviour {
 			saveWalls[i].SetActive(false);
 		}
 		// Remap the floor square so we can walk on them :)
-		map.PlaceMapObjects (map.Floor);
+		map.PlaceMapObjects ("Floor");
 	}
 	
 	public void BringWallsUp(){
@@ -122,7 +135,7 @@ public class CharacterMovement : MonoBehaviour {
 			saveWalls[i].SetActive(true);
 		}
 		// Remap the walls so we are restricted again
-		map.PlaceMapObjects (map.Walls);
+		map.PlaceMapObjects ("Walls");
 	}
 
 	IEnumerator MoveToSpace(int x,int y)
@@ -182,8 +195,5 @@ public class CharacterMovement : MonoBehaviour {
 		}
 		// set so that player can move with new input again
 		isMoving = false;
-		// after we move we need to update the map so the grid changes
-		// right now the whole map is being updated
-		map.BuildMap ();
 	}
 }

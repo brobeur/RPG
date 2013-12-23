@@ -5,32 +5,53 @@ public class MapBuilding : MonoBehaviour {
 
 	// the dimension of the map (must be square)
 	public static int mapSize = 14;
-	
+
+	public class characters {
+		public string characterType;
+
+		public characters (string type){
+			characterType = type;
+		}
+	}
+
+	public class gameItem {
+		public string itemType;
+		
+		public gameItem (string type){
+			itemType = type;
+		}
+	}
+
+
 	public class tile
 	{
 		public string tileType;
 		public bool traversable;
+		public characters character;
+		public gameItem items;
 		
-		public tile (string type, bool trav){
+		public tile (string type){
 			tileType = type;
-			traversable = trav;
+			if (type == "Grass" | type == "Floor" | type == "Path") {
+				traversable = true;
+			} else { 
+				traversable = false;
+			}
+			items = null;
+		}
+
+		public bool CanIMoveHere(){
+			if (!traversable | character != null){
+				return false;
+			} else {
+				return true;
+			}
 		}
 	}
-	
-	// tile types for this map
-	public tile Grass = new tile ("Grass", true);
-	public tile Water = new tile ("Water", false);
-	public tile Floor = new tile ("Floor", true);
-	public tile Walls = new tile ("Walls", false);
-	public tile Path = new tile ("Path", true);
-	public tile WallBase = new tile ("WallBase", false);
-	public tile NPCs = new tile ("NPCs", false);
-	public tile Enemies = new tile ("Enemies", false);
-	public tile Players = new tile ("Players", false);
-	
-	// block is used to find blocks that the play is not allowed to move onto
+	// block is used to find blocks
 	public GameObject[] block;
-	public GameObject[] saveWalls;
+	// gamechar is used to find characters
+	public GameObject[] gameChar;
 	// mapGrid keeps track of the map tiles
 	public tile[,] mapGrid = new tile[mapSize,mapSize];
 	// placeholders for finding coordinates of objects
@@ -41,38 +62,46 @@ public class MapBuilding : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		BuildMap ();
+
 	}
-	
+
+	//finds the character objects on the map and puts them into a tile
+	public void PlaceCharacterObjects (string target){
+		int positionX, positionY;
+		gameChar = GameObject.FindGameObjectsWithTag (target);
+		for (int i = 0; i < gameChar.Length; i++) {
+			positionX = (int) gameChar[i].transform.position.x;
+			positionY = (int) gameChar[i].transform.position.y;
+			mapGrid[positionX,positionY].character = new characters (target);
+		}
+	}
+
 	// Makes the map, just adds the blocks that shouldnt be passable to an array
 	// blocks such as water and other characters will be in here
-	public void PlaceMapObjects (tile target){
-		block = GameObject.FindGameObjectsWithTag (target.tileType);
+	public void PlaceMapObjects (string target){
+		block = GameObject.FindGameObjectsWithTag (target);
 		for (int i = 0; i < block.Length; i++) {
 			posx = (int) block[i].transform.position.x;
 			posy = (int) block[i].transform.position.y;
-			mapGrid[posx,posy] = target;
+			mapGrid[posx,posy] = new tile (target);
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	public int GetMapSize (){
-		return mapSize;
 	}
 
 	public void BuildMap(){
 		// we need to call this function for each object
-		PlaceMapObjects (Grass);
-		PlaceMapObjects (Water);
-		PlaceMapObjects (Floor);
-		PlaceMapObjects (Walls);
-		PlaceMapObjects (WallBase);
-		PlaceMapObjects (Path);
-		PlaceMapObjects (NPCs);
-		PlaceMapObjects (Enemies);
-		PlaceMapObjects (Players);
+		PlaceMapObjects ("Grass");
+		PlaceMapObjects ("Water");
+		PlaceMapObjects ("Floor");
+		PlaceMapObjects ("Walls");
+		PlaceMapObjects ("WallBase");
+		PlaceMapObjects ("Path");
+		PlaceCharacterObjects ("NPCs");
+		PlaceCharacterObjects ("Enemies");
+		PlaceCharacterObjects ("Players");
+	}
+
+	// Update is called once per frame
+	void Update () {
+		
 	}
 }

@@ -15,7 +15,8 @@ public class wander : MonoBehaviour {
 	public int waitTime = 3;
 	// the map builder object
 	public MapBuilding map;
-	
+	MapBuilding.characters saveEnemy;
+
 	// Use this for initialization
 	void Start () {
 		// the starting position of the enemy is where it is placed
@@ -26,29 +27,40 @@ public class wander : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (!isMoving){
-			isMoving = true;
 			if (Random.value < 0.25f) {
-				if (map.mapGrid[enemyPosx,enemyPosy + 1].traversable){
+				if (map.mapGrid[enemyPosx,enemyPosy + 1].CanIMoveHere()){
 					isMoving = true;
+					saveEnemy = map.mapGrid[enemyPosx,enemyPosy].character;
+					map.mapGrid[enemyPosx,enemyPosy].character = null;
 					enemyPosy = enemyPosy + 1;
+					map.mapGrid[enemyPosx,enemyPosy].character = saveEnemy;
 					StartCoroutine (MoveToSpace(enemyPosx, enemyPosy));
 				} else {isMoving = false;}
 			} else if (Random.value < 0.5f) {
-				if (map.mapGrid[enemyPosx,enemyPosy - 1].traversable){
+				if (map.mapGrid[enemyPosx,enemyPosy - 1].CanIMoveHere()){
 					isMoving = true;
+					saveEnemy = map.mapGrid[enemyPosx,enemyPosy].character;
+					map.mapGrid[enemyPosx,enemyPosy].character = null;
 					enemyPosy = enemyPosy - 1;
+					map.mapGrid[enemyPosx,enemyPosy].character = saveEnemy;
 					StartCoroutine (MoveToSpace(enemyPosx, enemyPosy));
 				} else {isMoving = false;}
 			} else if (Random.value < 0.75f) {
-				if (map.mapGrid[enemyPosx + 1,enemyPosy].traversable){
+				if (map.mapGrid[enemyPosx + 1,enemyPosy].CanIMoveHere()){
 					isMoving = true;
+					saveEnemy = map.mapGrid[enemyPosx,enemyPosy].character;
+					map.mapGrid[enemyPosx,enemyPosy].character = null;
 					enemyPosx = enemyPosx + 1;
+					map.mapGrid[enemyPosx,enemyPosy].character = saveEnemy;
 					StartCoroutine (MoveToSpace(enemyPosx, enemyPosy));
 				} else {isMoving = false;}
 			} else {
-				if (map.mapGrid[enemyPosx - 1,enemyPosy].traversable){
+				if (map.mapGrid[enemyPosx - 1,enemyPosy].CanIMoveHere()){
 					isMoving = true;
+					saveEnemy = map.mapGrid[enemyPosx,enemyPosy].character;
+					map.mapGrid[enemyPosx,enemyPosy].character = null;
 					enemyPosx = enemyPosx - 1;
+					map.mapGrid[enemyPosx,enemyPosy].character = saveEnemy;
 					StartCoroutine (MoveToSpace(enemyPosx, enemyPosy));
 				} else {isMoving = false;}
 			}
@@ -110,7 +122,6 @@ public class wander : MonoBehaviour {
 			transform.Translate(moveDistance);
 			yield return 0;
 		}
-		map.BuildMap ();
 		// we want the bug wander slowly, so he will pause after each move
 		yield return new WaitForSeconds((int)Random.Range(0, waitTime));
 		// set so that player can move with new input again
