@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CharacterMovement : MonoBehaviour {
 
@@ -11,7 +12,10 @@ public class CharacterMovement : MonoBehaviour {
 	KeyCode moveDown = KeyCode.S;
 	KeyCode moveLeft = KeyCode.A;
 	KeyCode moveRight = KeyCode.D;
+	KeyCode attack = KeyCode.Space;
 
+	// used to control attack speed
+	public bool isAttacking = false;
 	// block is used to find blocks that the play is not allowed to move onto
 	GameObject[] saveWalls;
 
@@ -42,6 +46,9 @@ public class CharacterMovement : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKey (attack) & !isAttacking){
+			StartCoroutine (Attack());
+		}
 		// Move your character when you press w,a,s,d. We must stay inside the map
 		// and we cant move into blocks that don't allow it
 		// allowable blocks are currently grass, path and floor
@@ -137,6 +144,27 @@ public class CharacterMovement : MonoBehaviour {
 		// Remap the walls so we are restricted again
 		map.PlaceMapObjects ("Walls");
 	}
+
+	void DoDamage (int x, int y){
+		if (map.mapGrid [x, y].character != null) {
+			print ("HIT!");
+			BugStats bugstats = map.mapGrid [x, y].character.gameObject.GetComponent<BugStats>();
+			print ("HP = " + bugstats.hitPoints);
+			bugstats.hitPoints =- 5;
+			print ("HP = " + bugstats.hitPoints);
+		}
+	}
+
+	IEnumerator Attack(){
+		print ("Attack!");
+		isAttacking = true;
+		DoDamage (playerPosx + 1, playerPosy);
+		DoDamage (playerPosx - 1, playerPosy);
+		DoDamage (playerPosx, playerPosy + 1);
+		DoDamage (playerPosx, playerPosy - 1);
+		yield return new WaitForSeconds(2);
+		isAttacking = false;
+		}
 
 	IEnumerator MoveToSpace(int x,int y)
 	{

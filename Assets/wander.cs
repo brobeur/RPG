@@ -123,7 +123,7 @@ public class wander : MonoBehaviour {
 			yield return 0;
 		}
 		// we want the bug wander slowly, so he will pause after each move
-		yield return new WaitForSeconds((int)Random.Range(0, waitTime));
+		yield return new WaitForSeconds((int)Random.Range(1, waitTime));
 		// set so that player can move with new input again
 		isMoving = false;
 	}

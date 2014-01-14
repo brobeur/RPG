@@ -8,9 +8,11 @@ public class MapBuilding : MonoBehaviour {
 
 	public class characters {
 		public string characterType;
+		public GameObject gameObject;
 
-		public characters (string type){
+		public characters (string type, GameObject obj){
 			characterType = type;
+			gameObject = obj;
 		}
 	}
 
@@ -72,7 +74,7 @@ public class MapBuilding : MonoBehaviour {
 		for (int i = 0; i < gameChar.Length; i++) {
 			positionX = (int) gameChar[i].transform.position.x;
 			positionY = (int) gameChar[i].transform.position.y;
-			mapGrid[positionX,positionY].character = new characters (target);
+			mapGrid[positionX,positionY].character = new characters (target, gameChar[i]);
 		}
 	}
 
@@ -95,8 +97,8 @@ public class MapBuilding : MonoBehaviour {
 		PlaceMapObjects ("Walls");
 		PlaceMapObjects ("WallBase");
 		PlaceMapObjects ("Path");
-		PlaceCharacterObjects ("NPCs");
-		PlaceCharacterObjects ("Enemies");
+		PlaceCharacterObjects ("NPC");
+		PlaceCharacterObjects ("EnemyBug");
 		PlaceCharacterObjects ("Players");
 	}
 
